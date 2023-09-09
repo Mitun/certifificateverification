@@ -1,113 +1,413 @@
-import Image from 'next/image'
+"use client";
+
+import Image from "next/image";
+import Header from "./components/Header";
+import CertificationVerify from "./components/CertificationVerify.json";
+import { useEffect, useState } from "react";
+import { ethers } from "ethers";
+import "./components/styling.css";
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+  const mycontract = "0xFCa3A60762Ced92A1389b2347e52f761Ea5F41ca";
+  const [address, setAddress] = useState(null);
+  const [contract, setContract] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [showForm2, setShowForm2] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage2, setSuccessMessage2] = useState("");
+  const [wrongMessage, setwrongMessage] = useState("");
+  const [wrongMessage2, setwrongMessage2] = useState("");
+  const [show, setShow] = useState(false);
+  const [data11, setData11] = useState("");
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+  const [certificateDetails, setCertificateDetails] = useState(null);
+  const [formdata, setFormdata] = useState({
+    certificateID: "",
+    certificateName: "",
+    CertificateRecepient: "",
+    cgpaObtained: "",
+    cgpaMaximum: "",
+    institution: "",
+  });
+  const [formdataa, setFormdataa] = useState({
+    certificateID: "",
+  });
+
+  function generateUniqueNumber(min, max, usedNumbers) {
+    let randomNumber;
+    do {
+      randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+    } while (
+      usedNumbers.includes(randomNumber) ||
+      randomNumber.toString().length !== 5
+    );
+
+    usedNumbers.push(randomNumber);
+    return randomNumber;
+  }
+  const usedNumbers = [];
+
+  useEffect(() => {
+    async function initialize() {
+      if (typeof window.ethereum !== "undefined") {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const address = await signer.getAddress();
+        setAddress(address);
+        const contract = new ethers.Contract(
+          mycontract,
+          CertificationVerify,
+          signer
+        );
+        setContract(contract);
+        console.log("Ethereum provider:", provider);
+      }
+    }
+    initialize();
+  }, []);
+
+  function toggleFormVisibility() {
+    setShowForm(!false);
+    setShowForm2(false);
+    setShow(false);
+    setSuccessMessage(false);
+    setCertificateDetails(false);
+    setwrongMessage(false);
+  }
+  function toggleFormVisibility2() {
+    setShowForm(false);
+    setShowForm2(!false);
+    setShow(false);
+    setSuccessMessage(false);
+    setCertificateDetails(false);
+    setwrongMessage(false);
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const { name, value } = e.target;
+
+    setFormdata((data) => ({ ...data, [name]: value }));
+    let shouldRerun = true;
+    const uniqueNumber = generateUniqueNumber(10000, 99999, usedNumbers);
+    console.log("Unique Number:", uniqueNumber);
+
+    setData11(uniqueNumber);
+  }
+  function handleSubmit2(e) {
+    e.preventDefault();
+    const { name, value } = e.target;
+    setFormdataa((data) => ({ ...data, [name]: value }));
+  }
+
+  // function handleSubmit2(e) {
+  //   e.preventDefault();
+  //   const { name, value } = e.target;
+  //   setFormdata((data) => ({ ...data, [name]: value }));
+  // }
+  async function submittingFormData() {
+    const data1 = data11;
+    console.log("data1 is:", data1);
+    // const data1 = formdata.certificateID;
+    const data2 = formdata.certificateName;
+    const data3 = formdata.CertificateRecepient;
+    const data4 = formdata.cgpaObtained;
+    const data5 = formdata.cgpaMaximum;
+    const data6 = formdata.institution;
+    console.log("dataaaaa", data1);
+    try {
+      if (
+        data1 === "" ||
+        data2 === "" ||
+        data3 === "" ||
+        data4 === "" ||
+        data5 === "" ||
+        data6 === ""
+      ) {
+        //setShowForm(true);
+
+        setwrongMessage2("All fields required.");
+        //successMessage(false);
+      } else {
+        // console.log(mydeporesult);
+        // setData1(data1);
+        const mydeporesult = await contract?.addNewCertificates(
+          data1,
+          data2,
+          data3,
+          data4,
+          data5,
+          data6
+        );
+        setSuccessMessage(
+          "Congratulations! Your data has been successfully submitted."
+        );
+
+        setwrongMessage(false);
+        setShowForm(false);
+        setShowForm2(false);
+        setwrongMessage2(false);
+      }
+    } catch (error) {
+      console.error("Error submitting data to the contract:", error);
+    }
+  }
+
+  async function retrievingFormData() {
+    console.log("Retrieving form data function called");
+    const mydeporesult = await contract?.getCertificateDetails(
+      formdataa.certificateID
+    );
+    console.log("hello:", mydeporesult.certificateName);
+    // if () {
+    //   console.log("data not found man");
+    // } else {
+    //   console.log("data found");
+    // }
+    console.log("output", mydeporesult);
+    setCertificateDetails(mydeporesult);
+    console.log("output certificate", certificateDetails);
+    if (mydeporesult.certificateName === "") {
+      console.log("its first loop");
+      setwrongMessage("Not Verified!!");
+      setCertificateDetails(false);
+      setShowForm(false);
+      setShowForm2(false);
+    } else {
+      setShowForm(false);
+      setShowForm2(false);
+      setSuccessMessage("Verification Successfull!!");
+    }
+  }
+
+  const certificateForm = (
+    <form className="mt-4">
+      {/* <div className="mb-4">
+        <label htmlFor="certificateID" className="block font-bold">
+          Certificate ID:
+        </label>
+        <input
+          type="number"
+          id="certificateID"
+          name="certificateID"
+          placeholder=" i.e. 123456"
+          className="border rounded p-2"
+          value={formdata.certificateID}
+          required
+          onChange={handleSubmit}
+        />
+      </div> */}
+      <div className="mb-4">
+        <label htmlFor="certificateName" className="block font-bold">
+          Certificate Completed:
+        </label>
+        <input
+          type="text"
+          id="certificateName"
+          name="certificateName"
+          placeholder=" i.e. SSC or HSC or BSC"
+          className="border rounded p-2"
+          value={formdata.certificateName}
+          required
+          onChange={handleSubmit}
         />
       </div>
+      <div className="mb-4">
+        <label htmlFor="CertificateRecepient" className="block font-bold">
+          Certificate Recipient:
+        </label>
+        <input
+          type="text"
+          id="CertificateRecepient"
+          name="CertificateRecepient"
+          placeholder=" i.e. Abid Adnan"
+          className="border rounded p-2"
+          value={formdata.CertificateRecepient}
+          required
+          onChange={handleSubmit}
+        />
+      </div>
+      <div className="mb-4">
+        <label htmlFor="cgpaObtained" className="block font-bold">
+          CGPA Obtained:
+        </label>
+        <input
+          type="number"
+          id="cgpaObtained"
+          name="cgpaObtained"
+          placeholder=" i.e. for 3.98 write 398"
+          className="border rounded p-2"
+          value={formdata.cgpaObtained}
+          required
+          onChange={handleSubmit}
+        />
+      </div>
+      <div className="mb-4">
+        <label htmlFor="cgpaMaximum" className="block font-bold">
+          Maximum CGPA:
+        </label>
+        <input
+          type="number"
+          id="cgpaMaximum"
+          name="cgpaMaximum"
+          placeholder=" i.e. 4"
+          className="border rounded p-2"
+          value={formdata.cgpaMaximum}
+          required
+          onChange={handleSubmit}
+        />
+      </div>
+      <div className="mb-4">
+        <label htmlFor="institution" className="block font-bold">
+          Institution Name:
+        </label>
+        <input
+          type="text"
+          id="institution"
+          name="institution"
+          placeholder=" i.e. Harvard University"
+          className="border rounded p-2"
+          value={formdata.institution}
+          required
+          onChange={handleSubmit}
+        />
+      </div>
+      {wrongMessage2 && (
+        <div className="text-red-900 text-xl mt-5 font-bold mb-4">
+          {wrongMessage2}
+        </div>
+      )}
+      <button
+        type="button"
+        className="flex justify-center bg-blue-500 hover:bg-blue-400  text-white font-bold py-2 px-4 rounded"
+        onClick={submittingFormData}
+      >
+        Submit
+      </button>
+    </form>
+  );
+  const certificateForm2 = (
+    <form onSubmit={handleSubmit2} className="mt-4 ">
+      <div className="mb-4">
+        <label htmlFor="certificateID" className="block font-bold">
+          Certificate ID:
+        </label>
+        <input
+          type="number"
+          id="certificateID"
+          name="certificateID"
+          placeholder=" i.e. 123456"
+          className="border rounded p-2"
+          value={formdataa.certificateID}
+          required
+          onChange={handleSubmit2}
+        />
+      </div>
+      <button
+        type="button"
+        className="flex justify-center bg-blue-500 hover:bg-blue-400  text-white font-bold py-2 px-4 rounded"
+        onClick={retrievingFormData}
+      >
+        CHECK
+      </button>
+    </form>
+  );
+  return (
+    <main className="gradient-background flex min-h-screen flex-col ">
+      <Header></Header>
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+      <div className="flex flex-col items-center py-10  mt-10 mb-10">
+        <div className="max-w-sm rounded overflow-hidden shadow-lg bg-orange-100 mb-10">
+          <div className="px-6 py-4">
+            <div className="font-bold text-xl mb-2 text-center">
+              Blockchain-Powered Certificate Verification: Verify with
+              Confidence
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-6">
+          <button
+            class=" bg-orange-500 hover:bg-orange-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+            onClick={toggleFormVisibility}
+          >
+            Add Certificate
+          </button>
+          <button
+            class=" bg-orange-500 hover:bg-orange-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+            onClick={toggleFormVisibility2}
+          >
+            Verify
+          </button>
+        </div>
+        {showForm ? certificateForm : showForm2 && certificateForm2}
+        {successMessage && (
+          <div className="mt-10 items-center flex flex-col justify-center text-center">
+            <Image
+              src="/img3.png"
+              alt="Image Description"
+              width={150}
+              height={40}
+            />
+            <div className="text-green-900 text-xl mt-4 font-bold">
+              {successMessage}
+            </div>
+          </div>
+        )}
+        {!certificateDetails && successMessage && (
+          <div>
+            <p className="font-bold text-xl mt-5 text-center">
+              Your Unique ID: {data11}
+            </p>
+            <p className="font-bold text-xl text-center">
+              Please make sure to keep a note of your ID for future reference.
+            </p>
+          </div>
+        )}
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+        {certificateDetails && (
+          <div className="mt-4 mb-10">
+            <div className="max-w-sm rounded overflow-hidden shadow-lg bg-green-100 mb-10">
+              <div className="px-6 py-4">
+                <div className="font-bold text-xl mb-2 text-center">
+                  <h3 className="mb-4">Certificate Details</h3>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+                  <p className="text-left">
+                    Certificate ID: {certificateDetails[0].toNumber()}
+                  </p>
+                  <p className="text-left">
+                    Certificate Name: {certificateDetails[1]}
+                  </p>
+                  <p className="text-left">
+                    Recipient: {certificateDetails[2]}
+                  </p>
+                  <p className="text-left">
+                    CGPA Obtained: {certificateDetails[3].toNumber()}
+                  </p>
+                  <p className="text-left">
+                    Maximum CGPA: {certificateDetails[4].toNumber()}
+                  </p>
+                  <p className="text-left">
+                    Institution: {certificateDetails[5]}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {wrongMessage && (
+          <div className=" mt-10 items-center flex flex-col justify-center text-center">
+            <Image
+              src="/img4.png"
+              alt="Image Description"
+              width={150} // Replace with the desired width
+              height={40}
+            />
+            <div className="text-red-900  text-xl mt-11 font-bold mb-4">
+              {wrongMessage}
+            </div>
+          </div>
+        )}
       </div>
     </main>
-  )
+  );
 }
