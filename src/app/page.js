@@ -43,9 +43,13 @@ const config = createConfig({
 });
 
 const Home = () => {
+  const [connectionStatus, setConnectionStatus] = useState(false);
   return (
     <WagmiConfig config={config}>
-      <Profile />
+      <Profile
+        connectionStatus={connectionStatus}
+        setConnectionStatus={setConnectionStatus}
+      />
       <Outstanding />
     </WagmiConfig>
   );
