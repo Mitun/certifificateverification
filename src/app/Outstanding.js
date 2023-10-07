@@ -22,7 +22,12 @@ const Outstanding = () => {
 
   const { address, isConnected } = useAccount();
   const { data: balance } = useBalance({ address });
+  if (balance) {
+    const { formatted, symbol, ...restOfBalance } = balance;
 
+    console.log(formatted);
+    console.log(symbol);
+  }
   //Now ether
   const [addressE, setAddressE] = useState(null);
   const [contract, setContract] = useState(null);
@@ -94,7 +99,6 @@ const Outstanding = () => {
 
   useEffect(() => {
     if (address) {
-      console.log("balance:", balance);
       async function initialize() {
         if (typeof window.ethereum !== "undefined") {
           try {
@@ -128,6 +132,7 @@ const Outstanding = () => {
     setBtn1(true);
     setBtn2(false);
     setShowForm(!false);
+
     setShowForm2(false);
     setShow(false);
     setSuccessMessage(false);
@@ -142,6 +147,15 @@ const Outstanding = () => {
     setBtn2(true);
     setShowForm(false);
     setShowForm2(!false);
+    if (showForm2) {
+      formdata.certificateName = "";
+      formdata.CertificateRecepient = "";
+      formdata.cgpaObtained = "";
+      formdata.cgpaMaximum = "";
+      formdata.institution = "";
+      setImage(null);
+      setFileName("");
+    }
     setShow(false);
     setSuccessMessage(false);
     setCertificateDetails(false);
@@ -198,13 +212,17 @@ const Outstanding = () => {
 
   useEffect(() => {
     setUseEffectCompleted(false);
-    if (image) {
+    if (image && !showForm2) {
       onSubmitImage().then(() => {
         setUseEffectCompleted(true);
         const uniqueNumber = generateUniqueNumber(10000, 99999);
         setData11(uniqueNumber);
         console.log("the unique number is:", uniqueNumber);
       });
+    }
+    if (showForm2 && !useEffectCompleted) {
+      setImage(null);
+      setFileName("");
     }
   }, [image]);
 
@@ -257,6 +275,7 @@ const Outstanding = () => {
   // }, [image]);
   async function submittingFormData() {
     try {
+      setUseEffectCompleted(false);
       console.log("Now starting submittingFormData");
       console.log("printing ipfs data before", ipfshashData);
       if (image) {
@@ -310,6 +329,7 @@ const Outstanding = () => {
       } else {
         setwrongMessage2("");
         setLoader2(true);
+        setShowForm(false);
         if (ipfshashData) {
           try {
             const valueToSend = ethers.utils.parseUnits("0.1", "ether");
@@ -349,6 +369,7 @@ const Outstanding = () => {
             formdata.cgpaMaximum = "";
             formdata.institution = "";
             setImage(null);
+            setShowForm(false);
             setSuccessMessage(
               "Congratulations! Your data has been successfully stored in BLOCKCHAIN."
             );
@@ -373,6 +394,13 @@ const Outstanding = () => {
               "Error submitting data to the contract:",
               error.message
             );
+            console.log("hwlllo type error", typeof error.message);
+            console.log("hwlllo type error", typeof error);
+            console.log("hwlllo type error", error);
+            console.log(error.message[0]);
+            console.log(error.message.slice(0, error.message.indexOf("(")));
+            console.log(error[1]);
+            console.log(error[2]);
           }
         } else {
           console.log(
@@ -768,7 +796,7 @@ const Outstanding = () => {
             </div>
           )}
 
-          {balanceError && (
+          {isConnected && balanceError && (
             <div className="mt-8  flex flex-col items-center  ">
               <Image
                 src="/wallet.jpg"

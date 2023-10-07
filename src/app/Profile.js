@@ -11,18 +11,10 @@ export function Profile({ connectionStatus, setConnectionStatus }) {
   const { data: balance, refetch } = useBalance({ address });
 
   useEffect(() => {
-    // Check if there's an error when connecting
-    if (error) {
-      console.error("Connection error:", error);
+    if (isConnected && balance) {
+      const { formatted, symbol, ...other } = balance;
     }
-
-    // Check if the connection status changes
-    if (isConnected) {
-      setConnectionStatus(true);
-    } else {
-      setConnectionStatus(false);
-    }
-  }, [error, isConnected, setConnectionStatus]);
+  }, [isConnected, balance]);
 
   const handleConnect = async (connector) => {
     try {
@@ -58,7 +50,8 @@ export function Profile({ connectionStatus, setConnectionStatus }) {
           <div className="mr-9">
             <p>Connected to: {address.slice(0, 7)}...</p>
             <p>
-              Balance: {parseFloat(balance.formatted).toFixed(5)}{" "}
+              Balance: {parseFloat(balance.formatted).toFixed(5)}
+              {""}
               {balance.symbol}
             </p>
           </div>
