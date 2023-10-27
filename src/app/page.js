@@ -6,7 +6,10 @@ import {
   configureChains,
   mainnet,
   useConnect,
+  useBalance,
+  useAccount,
 } from "wagmi";
+import Link from "next/link";
 
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
@@ -16,8 +19,11 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 import { polygonMumbai } from "wagmi/chains";
-import { Profile } from "./Profile";
-import Outstanding from "./Outstanding";
+import About from "./Components/About";
+import Skills from "./Components/Skills/Skills";
+import Projects from "./Components/Projects/Projects";
+import Contact from "./Components/Contact/Contact";
+import PDFiewer from "./Components/PDFViewer/PDFiewer";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, polygonMumbai],
@@ -43,14 +49,17 @@ const config = createConfig({
 });
 
 const Home = () => {
-  const [connectionStatus, setConnectionStatus] = useState(false);
   return (
     <WagmiConfig config={config}>
-      <Profile
-        connectionStatus={connectionStatus}
-        setConnectionStatus={setConnectionStatus}
-      />
-      <Outstanding />
+      <About></About>
+
+      <Skills />
+      <Projects />
+      {/* <PDFiewer /> */}
+      <Contact />
+      <p className="pb-2 text-white flex items-center justify-center">
+        © 2023, Mitun Shil
+      </p>
     </WagmiConfig>
   );
 };

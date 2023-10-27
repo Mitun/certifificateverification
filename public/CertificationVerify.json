@@ -7,6 +7,11 @@
         "type": "uint256"
       },
       {
+        "internalType": "address",
+        "name": "_userAddress",
+        "type": "address"
+      },
+      {
         "internalType": "string",
         "name": "_certificateName",
         "type": "string"
@@ -35,6 +40,11 @@
         "internalType": "string",
         "name": "_uriData",
         "type": "string"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isPublic",
+        "type": "bool"
       }
     ],
     "name": "addNewCertificates",
@@ -50,6 +60,12 @@
         "internalType": "uint256",
         "name": "certificateID",
         "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
       },
       {
         "indexed": false,
@@ -86,6 +102,12 @@
         "internalType": "string",
         "name": "uriData",
         "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isPublic",
+        "type": "bool"
       }
     ],
     "name": "CertificateAdded",
@@ -95,19 +117,19 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
         "indexed": false,
         "internalType": "uint256",
         "name": "certificateID",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isPublic",
+        "type": "bool"
       }
     ],
-    "name": "CertificateChecked",
+    "name": "CertificateVisibilityChanged",
     "type": "event"
   },
   {
@@ -132,6 +154,24 @@
   {
     "inputs": [],
     "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_certificateID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isPublic",
+        "type": "bool"
+      }
+    ],
+    "name": "setCertificateVisibility",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -165,6 +205,11 @@
         "type": "uint256"
       },
       {
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      },
+      {
         "internalType": "string",
         "name": "certificateName",
         "type": "string"
@@ -193,6 +238,11 @@
         "internalType": "string",
         "name": "uriData",
         "type": "string"
+      },
+      {
+        "internalType": "bool",
+        "name": "isPublic",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -209,39 +259,75 @@
     "name": "getCertificateDetails",
     "outputs": [
       {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "certificateID",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "userAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "certificateName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "CertificateRecepient",
+            "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "cgpaObtained",
+            "type": "int256"
+          },
+          {
+            "internalType": "int256",
+            "name": "cgpaMaximum",
+            "type": "int256"
+          },
+          {
+            "internalType": "string",
+            "name": "institution",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "uriData",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "isPublic",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct NewCertificate.CertificateDetails",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
-        "name": "certificateID",
+        "name": "_certificateID",
         "type": "uint256"
-      },
+      }
+    ],
+    "name": "getCertificateID",
+    "outputs": [
       {
-        "internalType": "string",
-        "name": "certificateName",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "CertificateRecepient",
-        "type": "string"
-      },
-      {
-        "internalType": "int256",
-        "name": "cgpaObtained",
-        "type": "int256"
-      },
-      {
-        "internalType": "int256",
-        "name": "cgpaMaximum",
-        "type": "int256"
-      },
-      {
-        "internalType": "string",
-        "name": "institution",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_uriData",
-        "type": "string"
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",

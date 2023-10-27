@@ -1,18 +1,21 @@
 //made changes
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useAccount, useBalance, useConnect, useDisconnect } from "wagmi";
 
-export function Profile({ connectionStatus, setConnectionStatus }) {
+export function Profile({}) {
   const { connect, connectors, error, isLoading, pendingConnector } =
     useConnect();
   const { address, connector, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
   const { data: balance, refetch } = useBalance({ address });
+  const [realtimeBalance, setRealtimeBalance] = useState(null);
 
   useEffect(() => {
     if (isConnected && balance) {
       const { formatted, symbol, ...other } = balance;
+      setRealtimeBalance(balance);
+      console.log("realtime in profile.js:", realtimeBalance);
     }
   }, [isConnected, balance]);
 
@@ -50,8 +53,7 @@ export function Profile({ connectionStatus, setConnectionStatus }) {
           <div className="mr-9">
             <p>Connected to: {address.slice(0, 7)}...</p>
             <p>
-              Balance: {parseFloat(balance.formatted).toFixed(5)}
-              {""}
+              Balance: {parseFloat(balance.formatted).toFixed(5)}{" "}
               {balance.symbol}
             </p>
           </div>

@@ -22,6 +22,16 @@
     #00d4ff
   );
 }
+.gradient-background2 {
+  background: linear-gradient(to bottom right, #7b5e93, #ff6b6b);
+}
+.gradient-background3 {
+  background: linear-gradient(to bottom right, #ffd166, #ff9472);
+}
+.gradient-background4 {
+  background: linear-gradient(to right, #001f3f, #00a8cc);
+}
+
 .custom-input-width {
   width: 120px; /* Adjust the width as needed */
 }
