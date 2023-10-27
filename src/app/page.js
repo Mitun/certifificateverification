@@ -33,7 +33,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   ]
 );
 
-// Set up wagmi config
+// Set up wagmi config for now
 const config = createConfig({
   autoConnect: false,
   connectors: [
